@@ -38,7 +38,7 @@ const run = async () => {
       if (result?.email) {
         return res.send({ status: true, data: result });
       }
-
+    
       res.send({ status: false });
     });
 
