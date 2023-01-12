@@ -114,7 +114,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
       }
 
       res.send({ status: false });
-    });
+    });  
 
     app.get("/applied-jobs/:email", async (req, res) => {
       const email = req.params.email;
@@ -124,6 +124,18 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 
       res.send({ status: true, data: result });
     });
+
+    app.get("/applied-jobs/:email/job/:jobId", async (req, res) => {
+      const email = req.params.email;
+      const jobId = req.params.jobId
+      const query = { _id: ObjectId(jobId), applicants: { $elemMatch: { email: email } } };
+      const cursor = jobCollection.find(query).project({ applicants: 0 });
+      const result = await cursor.toArray();
+
+      res.send({ status: true, data: result });
+    });
+
+
 
     app.get("/jobs", async (req, res) => {
       const cursor = jobCollection.find({});
